@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Databricks
+.databricks/
+
+# OS
+.DS_Store
+
+# Outputs
+outputs/logs/
+outputs/reports/
