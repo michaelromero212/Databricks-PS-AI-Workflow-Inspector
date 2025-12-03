@@ -10,6 +10,87 @@ A professional tool for scanning, analyzing, and documenting Databricks Jobs & N
 ## 📌 Project Goal
 This tool allows Professional Services (PS) teams to quickly inspect a client's Databricks environment, analyze workflow health, and generate actionable reports using Generative AI. It bridges the gap between manual code reviews and automated optimization.
 
+## 🏗️ Architecture
+
+### System Overview
+```
+┌─────────────────────────────────────────────────────────────┐
+│                       Frontend (Browser)                     │
+│  ┌────────────────┐  ┌──────────────┐  ┌─────────────────┐ │
+│  │  index.html    │  │   app.js     │  │   styles.css    │ │
+│  │  (UI Layout)   │  │  (Logic)     │  │  (Styling)      │ │
+│  └────────────────┘  └──────────────┘  └─────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+                            │ HTTP/REST
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    FastAPI Backend (Python)                  │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │  app.py (API Endpoints)                              │   │
+│  │  • GET /jobs       • GET /status                     │   │
+│  │  • POST /scan/{id} • GET /report/{id}/pdf            │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                            │                                 │
+│  ┌────────────────┐  ┌─────────────────┐  ┌──────────────┐ │
+│  │  dbx_client.py │  │  analyzer.py    │  │ model_       │ │
+│  │  (Databricks   │  │  (Workflow      │  │ selector.py  │ │
+│  │   CLI Wrapper) │  │   Analysis)     │  │ (LLM API)    │ │
+│  └────────────────┘  └─────────────────┘  └──────────────┘ │
+│         │                     │                    │         │
+│  ┌──────────────────┐  ┌─────────────────────────────────┐ │
+│  │ cost_calculator  │  │  report_generator.py            │ │
+│  │ .py (DBU/Cost)   │  │  (Markdown + PDF)               │ │
+│  └──────────────────┘  └─────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+           │                                         │
+           ▼                                         ▼
+┌─────────────────────┐                   ┌──────────────────┐
+│  Databricks CLI     │                   │  LLM Provider    │
+│  • Job Metadata     │                   │  • HuggingFace   │
+│  • Notebook Source  │                   │  • Databricks    │
+│  • Run History      │                   │    Serving       │
+└─────────────────────┘                   └──────────────────┘
+```
+
+### Data Flow
+1. **User Selection**: User selects a job (demo or real) via the frontend.
+2. **Job Retrieval**: Backend fetches job details via Databricks CLI.
+3. **Cost Calculation**: `cost_calculator.py` estimates cost based on cluster config and run history.
+4. **AI Analysis**: Notebook code is sent to LLM for quality assessment.
+5. **Report Generation**: Results are compiled into Markdown/PDF reports.
+6. **Display**: Frontend shows scores, cost estimates, and actionable recommendations.
+
+## 🧰 Tech Stack
+
+### Backend
+- **Framework**: FastAPI (Python 3.8+)
+- **Databricks Integration**: Databricks CLI (subprocess calls)
+- **AI/LLM**: 
+  - HuggingFace Inference API (Mistral-7B-Instruct)
+  - Databricks Model Serving (DBRX)
+- **Cost Calculation**: Custom DBU-based pricing engine
+- **Report Generation**: Markdown + WeasyPrint (PDF)
+
+### Frontend
+- **HTML5**: Semantic, accessible structure
+- **Vanilla JavaScript**: No framework dependencies
+- **CSS3**: Custom colorblind-safe design system
+- **API Communication**: Fetch API (RESTful)
+
+### Infrastructure
+- **Server**: Uvicorn (ASGI)
+- **Environment**: Python venv
+- **Configuration**: `.env` files (dotenv)
+- **CLI Tools**: Databricks CLI v0.18.0+
+
+### Key Libraries
+```
+fastapi           # Web framework
+uvicorn          # ASGI server
+python-dotenv    # Environment config
+requests         # HTTP client for LLM APIs
+```
+
 ## 📸 Dashboard Overview
 
 ### 1. Flexible Job Selection
