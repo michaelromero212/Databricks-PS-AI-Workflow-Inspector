@@ -1,14 +1,155 @@
 # Databricks PS AI Workflow Inspector
 
-A professional tool for scanning, analyzing, and documenting Databricks Jobs & Notebooks using the Databricks CLI, Python, and LLMs.
-
-![Status](https://img.shields.io/badge/Status-Interview%20Ready-blue)
-![Tech](https://img.shields.io/badge/Tech-FastAPI%20%7C%20React%20%7C%20Databricks%20CLI-orange)
+![Status](https://img.shields.io/badge/Status-Production%20Ready-blue)
+![Tech](https://img.shields.io/badge/Tech-FastAPI%20%7C%20JavaScript%20%7C%20Databricks%20CLI-orange)
 
 ---
 
-## 📌 Project Goal
-This tool allows Professional Services (PS) teams to quickly inspect a client's Databricks environment, analyze workflow health, and generate actionable reports using Generative AI. It bridges the gap between manual code reviews and automated optimization.
+## 🎯 Problem Statement
+
+**For Databricks Professional Services Teams:**
+
+During client engagements, PS consultants often encounter production workflows with:
+- ❌ Inefficient cluster configurations costing thousands in unnecessary compute
+- ❌ Undocumented notebooks making maintenance difficult
+- ❌ Poor code quality leading to pipeline failures
+- ❌ Security vulnerabilities (hardcoded credentials, missing error handling)
+
+**Manual code reviews are time-consuming and inconsistent.** This tool automates the entire workflow inspection process using **AI-powered analysis** to deliver instant, **actionable insights** and **cost optimization recommendations**.
+
+---
+
+## 📸 Dashboard Overview
+
+### Main Interface
+The dashboard provides an intuitive interface for selecting and scanning Databricks workflows:
+
+![Dashboard Main](assets/images/dashboard_main.jpg)
+
+### Job Selection
+Connect to a client's Databricks workspace and select any workflow for analysis:
+
+![Job Selection](assets/images/job_selected.jpg)
+
+### Comprehensive Analysis Results
+Instant, AI-powered insights with:
+- **Health Scores**: 0-100 ratings for Workflow Health, Code Quality, and Documentation
+- **Top Fixes**: Prioritized, actionable recommendations
+- **Cluster Sizing**: Right-sizing suggestions to reduce costs
+- **Detailed Issues**: Categorized findings with severity levels
+
+![Analysis Results](assets/images/analysis_results.jpg)
+
+### Workflow Dropdown
+Easily browse all workflows in the connected workspace:
+
+![Workflow Selection](assets/images/dashboard_selection.jpg)
+
+---
+
+## 🚀 Key Features
+
+### AI-Powered Analysis
+- **Notebook Quality Assessment**: Evaluates Python/SQL code against best practices
+- **Documentation Completeness**: Scores inline comments and documentation
+- **Security Scanning**: Identifies hardcoded credentials, missing error handling
+- **Performance Optimization**: Suggests cluster sizing improvements
+
+### Real-Time Insights
+- **Instant Scoring**: 0-100 health scores across multiple dimensions
+- **Prioritized Fixes**: Top 5 actionable recommendations
+- **Detailed Reports**: Comprehensive breakdown of all issues
+
+### Professional Services Value
+- **Faster Engagements**: Reduce manual code review time from days to minutes
+- **Data-Driven Recommendations**: Objective, AI-backed insights
+- **Client-Ready Reports**: Professional PDF reports for stakeholder presentations
+
+---
+
+## 🧰 Tech Stack
+
+### Backend
+- **FastAPI** (Python 3.8+) - High-performance async web framework
+- **Databricks CLI** - Direct integration with client workspaces
+- **LLM Integration**: 
+  - HuggingFace Inference API (Mistral-7B-Instruct)
+  - Databricks Model Serving (DBRX)
+
+### Frontend
+- **Vanilla JavaScript** - No framework dependencies, lightweight and fast
+- **Modern CSS3** - Professional, colorblind-safe design system
+- **Responsive Design** - Works across desktop, tablet, and mobile
+
+### Infrastructure
+- **Uvicorn** ASGI server
+- **Python venv** for dependency isolation
+- **RESTful API** architecture
+
+---
+
+## 🏁 Quick Start
+
+### Prerequisites
+1. **Python 3.8+**
+2. **Databricks CLI** installed and configured
+   ```bash
+   databricks configure
+   ```
+3. **(Optional) LLM API Access**:
+   - HuggingFace token in `.env` file, OR
+   - Databricks Model Serving endpoint
+
+### Running the Application
+
+1. **Clone the repository**
+   ```bash
+   cd databricks-ps-workflow-inspector
+   ```
+
+2. **Configure environment**
+   ```bash
+   cp .env.sample .env
+   # Edit .env with your credentials
+   ```
+
+3. **Launch the application**
+   ```bash
+   ./start.sh
+   ```
+   This script automatically:
+   - Creates a virtual environment
+   - Installs all dependencies
+   - Starts the FastAPI server
+
+4. **Access the dashboard**
+   Open your browser to **http://localhost:8000**
+
+---
+
+## 📂 Project Structure
+
+```
+databricks-ps-workflow-inspector/
+├── backend/
+│   ├── app.py                  # FastAPI routes and endpoints
+│   ├── dbx_client.py           # Databricks CLI wrapper
+│   ├── analyzer.py             # AI-powered workflow analysis
+│   ├── model_selector.py       # LLM provider interface
+│   └── report_generator.py     # Markdown/PDF report generation
+├── frontend/
+│   ├── index.html              # Main UI structure
+│   ├── app.js                  # Application logic
+│   ├── styles.css              # Professional design system
+│   └── colorblind_palette.js   # Accessible color schemes
+├── assets/
+│   └── images/                 # Dashboard screenshots
+├── outputs/                    # Generated reports and logs
+├── .env.sample                 # Environment configuration template
+└── start.sh                    # One-command startup script
+```
+
+---
 
 ## 🏗️ Architecture
 
@@ -37,10 +178,9 @@ This tool allows Professional Services (PS) teams to quickly inspect a client's 
 │  │   CLI Wrapper) │  │   Analysis)     │  │ (LLM API)    │ │
 │  └────────────────┘  └─────────────────┘  └──────────────┘ │
 │         │                     │                    │         │
-│  ┌──────────────────┐  ┌─────────────────────────────────┐ │
-│  │ cost_calculator  │  │  report_generator.py            │ │
-│  │ .py (DBU/Cost)   │  │  (Markdown + PDF)               │ │
-│  └──────────────────┘  └─────────────────────────────────┘ │
+│  ┌─────────────────────────────────────────────────────────┐│
+│  │  report_generator.py (Markdown + PDF)                   ││
+│  └─────────────────────────────────────────────────────────┘│
 └─────────────────────────────────────────────────────────────┘
            │                                         │
            ▼                                         ▼
@@ -53,138 +193,60 @@ This tool allows Professional Services (PS) teams to quickly inspect a client's 
 ```
 
 ### Data Flow
-1. **User Selection**: User selects a job (demo or real) via the frontend.
-2. **Job Retrieval**: Backend fetches job details via Databricks CLI.
-3. **Cost Calculation**: `cost_calculator.py` estimates cost based on cluster config and run history.
-4. **AI Analysis**: Notebook code is sent to LLM for quality assessment.
-5. **Report Generation**: Results are compiled into Markdown/PDF reports.
-6. **Display**: Frontend shows scores, cost estimates, and actionable recommendations.
-
-## 🧰 Tech Stack
-
-### Backend
-- **Framework**: FastAPI (Python 3.8+)
-- **Databricks Integration**: Databricks CLI (subprocess calls)
-- **AI/LLM**: 
-  - HuggingFace Inference API (Mistral-7B-Instruct)
-  - Databricks Model Serving (DBRX)
-- **Cost Calculation**: Custom DBU-based pricing engine
-- **Report Generation**: Markdown + WeasyPrint (PDF)
-
-### Frontend
-- **HTML5**: Semantic, accessible structure
-- **Vanilla JavaScript**: No framework dependencies
-- **CSS3**: Custom colorblind-safe design system
-- **API Communication**: Fetch API (RESTful)
-
-### Infrastructure
-- **Server**: Uvicorn (ASGI)
-- **Environment**: Python venv
-- **Configuration**: `.env` files (dotenv)
-- **CLI Tools**: Databricks CLI v0.18.0+
-
-### Key Libraries
-```
-fastapi           # Web framework
-uvicorn          # ASGI server
-python-dotenv    # Environment config
-requests         # HTTP client for LLM APIs
-```
-
-## 📸 Dashboard Overview
-
-### 1. Flexible Job Selection
-The dashboard offers two distinct modes for engagement:
-- **Demo Scenarios**: Pre-loaded examples (Inefficient, Risky, Optimized) to demonstrate capabilities without a live workspace.
-- **Real Job Selection**: Connects to the client's Databricks workspace to list and analyze actual production jobs.
-
-![Dashboard Selection](assets/images/dashboard_selection.jpg)
-
-### 2. Workflow Analysis
-Once a job is selected (either demo or real), the tool scans the job configuration, cluster settings, and notebook code.
-
-![Job Selected](assets/images/job_selected.jpg)
-
-### 3. Comprehensive Results
-The analysis provides immediate, data-driven insights:
-- **Health Scores**: 0-100 ratings for Workflow Health, Code Quality, and Documentation.
-- **Cost Estimation**: Real-time cost-per-run calculation based on cluster instance types and duration.
-- **Actionable Fixes**: Prioritized recommendations (e.g., "Move credentials to Secrets", "Pin library versions").
-- **Detailed Issues**: Specific findings categorized by severity (High/Medium/Low).
-
-![Analysis Results](assets/images/analysis_results.jpg)
+1. **User Selection**: Select a workflow from the connected Databricks workspace
+2. **Job Retrieval**: Backend fetches job configuration and notebook source via Databricks CLI
+3. **AI Analysis**: Notebook code is analyzed by LLM for quality, security, and optimization opportunities
+4. **Report Generation**: Results compiled into actionable insights and professional reports
+5. **Display**: Frontend presents scores, recommendations, and detailed findings
 
 ---
 
-## 🚀 Features
-- **Job Inspection**: Lists all jobs via Databricks CLI.
-- **Deep Scan**: Downloads notebook source code and configuration.
-- **AI Analysis**: Uses LLMs (Databricks DBRX or Mistral-7B) to evaluate:
-  - Notebook quality & Python best practices
-  - SQL efficiency
-  - Cluster sizing & cost optimization
-  - Documentation completeness
-- **Cost Optimization Engine**:
-  - Calculates estimated cost per run
-  - Identifies expensive cluster configurations (e.g., GPU over-provisioning)
-  - Suggests cheaper alternatives (e.g., "Downsize to m5.xlarge")
-- **Reporting**: Generates a comprehensive Markdown and PDF report.
-- **UI**: Responsive, colorblind-safe web interface.
+## 🧪 Testing the Application
 
-## 📂 Structure
-```
-databricks-ps-workflow-inspector/
-├── backend/            # FastAPI application & Analysis logic
-├── frontend/           # Vanilla JS/HTML/CSS UI
-├── assets/             # Images and static resources
-├── outputs/            # Generated reports and logs
-└── start.sh            # One-click startup script
-```
+### Demo Mode
+The application works without a live Databricks workspace for demonstration purposes:
 
-## 🛠️ Prerequisites
-1. **Python 3.8+**
-2. **Databricks CLI**: Installed and configured (`databricks configure`).
-   - Ensure you can run `databricks jobs list` in your terminal.
-3. **LLM Access** (Optional for demo, required for real analysis):
-   - Set `HF_TOKEN` environment variable for HuggingFace (Mistral).
-   - OR configure Databricks Serving in `backend/model_selector.py`.
+1. Launch the application: `./start.sh`
+2. Open http://localhost:8000
+3. Select a workflow (real or demo scenario)
+4. Click **"Run Workflow Scan"**
+5. Review the analysis results
+6. Download the PDF report
 
-## 🏁 Quick Start
-
-1. **Clone & Navigate**
-   ```bash
-   cd databricks-ps-workflow-inspector
-   ```
-
-2. **Run the Application**
-   ```bash
-   ./start.sh
-   ```
-   This script will:
-   - Create a virtual environment
-   - Install dependencies
-   - Start the FastAPI server
-
-3. **Access the UI**
-   Open your browser to [http://localhost:8000](http://localhost:8000)
-
-## 🧪 How to Test (Interview Demo)
-1. **Setup**:
-   - Ensure `.env` is configured with your Databricks credentials.
-   - Run `./start.sh` to launch the backend and frontend.
-
-2. **Run the Demo**:
-   - Open [http://localhost:8000](http://localhost:8000).
-   - Select one of the pre-configured demo jobs:
-     - **Inefficient Legacy ETL** (ID: 576914796776653) -> Expect Low Score (~$0.20/run)
-     - **Risky ML Pipeline** (ID: 392290392510064) -> Expect Medium Score (~$0.50/run)
-     - **Optimized ETL** (ID: 900088613589267) -> Expect High Score (~$3.60/run)
-   - Click **"Run Workflow Scan"**.
-   - View the generated report and download the PDF.
-
-## 🛡️ Security Note
-- This project uses a `.env` file for credentials. **DO NOT commit this file to GitHub.**
-- A `.gitignore` has been included to prevent accidental commits of secrets.
+### Production Use
+1. Configure `.env` with Databricks workspace credentials
+2. Ensure Databricks CLI is authenticated: `databricks jobs list`
+3. Select real production workflows from the dropdown
+4. Analyze and generate reports for client presentations
 
 ---
-*Built for the Databricks Professional Services Team.*
+
+## 🛡️ Security Notes
+
+- All credentials stored in `.env` file (never committed to Git)
+- `.gitignore` configured to protect sensitive files
+- Databricks CLI authentication uses secure token-based auth
+- No hardcoded credentials in source code
+
+---
+
+## 💼 Professional Services Use Cases
+
+### Engagement Kickoff
+- Quickly assess client's existing workflows
+- Identify immediate optimization opportunities
+- Build credibility with data-driven insights
+
+### Migration Projects
+- Evaluate legacy code quality before migration
+- Prioritize refactoring efforts
+- Estimate cost savings from optimization
+
+### Health Checks
+- Regular workflow audits for existing clients
+- Track improvements over time
+- Demonstrate ongoing value
+
+---
+
+*Built for the Databricks Professional Services Team | Production-Ready Tool for Client Engagements*
