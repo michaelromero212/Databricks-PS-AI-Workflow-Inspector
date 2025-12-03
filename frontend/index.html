@@ -37,8 +37,9 @@
             <p class="helper-text">Choose a job below, then click "Run Workflow Scan" to analyze it.</p>
 
             <!-- Demo Quick-Select Buttons -->
-            <div class="demo-section" role="region" aria-label="Demo Quick Select">
-                <h3>Quick Select: Demo Jobs</h3>
+            <div class="demo-section" role="region" aria-label="Demo Scenarios">
+                <h3>Option 1: Load a Demo Scenario</h3>
+                <p class="section-desc">Simulate common customer scenarios without connecting to a workspace.</p>
                 <div class="demo-buttons">
                     <button class="demo-btn low-score" data-job-id="576914796776653"
                         aria-label="Select Inefficient ETL Demo">
@@ -63,11 +64,15 @@
             </div>
 
             <!-- Manual Selection -->
-            <div class="controls">
-                <label for="job-select" class="visually-hidden">Select a job from the list</label>
-                <select id="job-select" aria-label="Job selection dropdown">
-                    <option value="" disabled selected>Select a job manually...</option>
-                </select>
+            <div class="controls-section">
+                <h3>Option 2: Select a Real Job</h3>
+                <p class="section-desc">Analyze an actual job from your connected Databricks workspace.</p>
+                <div class="controls">
+                    <label for="job-select" class="visually-hidden">Select a job from the list</label>
+                    <select id="job-select" aria-label="Job selection dropdown">
+                        <option value="" disabled selected>Select a job manually...</option>
+                    </select>
+                </div>
             </div>
 
             <div class="scan-action">
