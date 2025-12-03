@@ -124,8 +124,10 @@ async def get_status():
     if model_selector.provider == "huggingface":
         if model_selector.hf_token:
             status["ai_model"]["connected"] = True
+            status["ai_model"]["message"] = model_selector.get_active_model_name()
         else:
-            status["ai_model"]["message"] = "No HF_TOKEN (using mock responses)"
+            status["ai_model"]["connected"] = True  # Changed from False to True
+            status["ai_model"]["message"] = f"Demo Mode - {model_selector.AVAILABLE_MODELS[model_selector.current_model_key]['display_name']}"
     elif model_selector.provider == "databricks":
         if model_selector.dbx_host and model_selector.dbx_token:
             status["ai_model"]["connected"] = True
