@@ -6,13 +6,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusIndicator = document.getElementById('status-indicator');
     const resultsArea = document.getElementById('results-area');
     const demoBtns = document.querySelectorAll('.demo-btn');
+    const modelSelect = document.getElementById('model-select');
 
     // Fetch initial data
     fetchJobs();
     fetchStatus();
+    fetchModels();
 
     // Refresh status every 30 seconds
     setInterval(fetchStatus, 30000);
+
+    // Model selection event listener
+    modelSelect.addEventListener('change', handleModelChange);
 
     // Demo button event listeners
     demoBtns.forEach(btn => {
@@ -223,5 +228,60 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             element.textContent = current;
         }, 30);
+    }
+
+    async function fetchModels() {
+        try {
+            const response = await fetch(`${API_BASE}/models`);
+            const data = await response.json();
+
+            // Clear existing options
+            modelSelect.innerHTML = '';
+
+            // Populate dropdown with available models
+            data.models.forEach(model => {
+                const option = document.createElement('option');
+                option.value = model.key;
+                option.textContent = model.name;
+
+                // Select the current model
+                if (model.key === data.current) {
+                    option.selected = true;
+                }
+
+                modelSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error fetching models:', error);
+            modelSelect.innerHTML = '<option value="">Error loading models</option>';
+        }
+    }
+
+    async function handleModelChange() {
+        const selectedModel = modelSelect.value;
+        if (!selectedModel) return;
+
+        try {
+            const response = await fetch(`${API_BASE}/models/${selectedModel}`, {
+                method: 'POST'
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                console.log(`Switched to model: ${data.model}`);
+                // Refresh status to show new model
+                fetchStatus();
+            } else {
+                console.error('Failed to switch model:', data.message);
+                alert('Failed to switch model. Please try again.');
+                // Reload models to reset selection
+                fetchModels();
+            }
+        } catch (error) {
+            console.error('Error switching model:', error);
+            alert('Error switching model. Please try again.');
+            fetchModels();
+        }
     }
 });

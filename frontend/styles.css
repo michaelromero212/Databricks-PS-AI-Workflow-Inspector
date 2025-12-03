@@ -154,6 +154,48 @@ header h1 {
     margin-right: 0.25rem;
 }
 
+/* Model Selector */
+.model-selector-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    backdrop-filter: blur(10px);
+}
+
+.model-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+}
+
+.model-dropdown {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.25rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.model-dropdown:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.model-dropdown:focus {
+    outline: 2px solid var(--yellow);
+    outline-offset: 2px;
+}
+
+.model-dropdown option {
+    background: var(--primary-blue);
+    color: white;
+}
+
 /* ===== MAIN CONTENT ===== */
 main {
     flex: 1;
