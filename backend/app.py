@@ -47,17 +47,23 @@ async def list_jobs():
     """Lists available Databricks jobs."""
     jobs = dbx_client.list_jobs()
     
-    # Filter to only show Inspector demo jobs
-    # Include jobs that contain "Inspector" or "PS-AI-Workflow" in the name
-    # Or match the specific demo job IDs
-    demo_job_ids = ["576914796776653", "900088613589267", "392290392510064"]
+    # Filter to show AI Workflow Inspector jobs
+    # Include jobs that contain "Inspector" or "AI Workflow" in the name
+    # Or match the specific job IDs from the workspace
+    inspector_job_ids = [
+        "168200008379197",  # Inefficient ETL
+        "738405607303723",  # Risky ML
+        "617202467504242",  # Optimized ETL
+        "792939239653748",  # Data Quality
+        "535040239582958"   # Streaming
+    ]
     
     filtered_jobs = [
         job for job in jobs
         if (
-            str(job.get("job_id")) in demo_job_ids or
+            str(job.get("job_id")) in inspector_job_ids or
             "Inspector" in job.get("settings", {}).get("name", "") or
-            "PS-AI-Workflow" in job.get("settings", {}).get("name", "")
+            "AI Workflow" in job.get("settings", {}).get("name", "")
         )
     ]
     
@@ -105,13 +111,19 @@ async def get_status():
         jobs = dbx_client.list_jobs()
         
         # Apply same filtering as /jobs endpoint
-        demo_job_ids = ["576914796776653", "900088613589267", "392290392510064"]
+        inspector_job_ids = [
+            "168200008379197",  # Inefficient ETL
+            "738405607303723",  # Risky ML
+            "617202467504242",  # Optimized ETL
+            "792939239653748",  # Data Quality
+            "535040239582958"   # Streaming
+        ]
         filtered_jobs = [
             job for job in jobs
             if (
-                str(job.get("job_id")) in demo_job_ids or
+                str(job.get("job_id")) in inspector_job_ids or
                 "Inspector" in job.get("settings", {}).get("name", "") or
-                "PS-AI-Workflow" in job.get("settings", {}).get("name", "")
+                "AI Workflow" in job.get("settings", {}).get("name", "")
             )
         ]
         

@@ -40,43 +40,16 @@
     <main role="main">
         <section id="job-selection" class="card" aria-labelledby="selection-heading">
             <h2 id="selection-heading">Select Job to Scan</h2>
-            <p class="helper-text">Choose a job below, then click "Run Workflow Scan" to analyze it.</p>
+            <p class="helper-text">Select a job from your workspace, then click "Run Workflow Scan" to analyze it.</p>
 
-            <!-- Demo Quick-Select Buttons -->
-            <div class="demo-section" role="region" aria-label="Demo Scenarios">
-                <h3>Option 1: Load a Demo Scenario</h3>
-                <p class="section-desc">Simulate common customer scenarios without connecting to a workspace.</p>
-                <div class="demo-buttons">
-                    <button class="demo-btn low-score" data-job-id="576914796776653"
-                        aria-label="Select Inefficient ETL Demo">
-                        <span class="demo-label">Low Score</span>
-                        Inefficient ETL
-                    </button>
-                    <button class="demo-btn medium-score" data-job-id="392290392510064"
-                        aria-label="Select Risky ML Demo">
-                        <span class="demo-label">Medium Score</span>
-                        Risky ML
-                    </button>
-                    <button class="demo-btn high-score" data-job-id="900088613589267"
-                        aria-label="Select Optimized ETL Demo">
-                        <span class="demo-label">High Score</span>
-                        Optimized ETL
-                    </button>
-                </div>
-            </div>
-
-            <div class="divider">
-                <span>OR</span>
-            </div>
-
-            <!-- Manual Selection -->
+            <!-- Job Selection -->
             <div class="controls-section">
-                <h3>Option 2: Select a Real Job</h3>
-                <p class="section-desc">Analyze an actual job from your connected Databricks workspace.</p>
+                <h3>Select a Workflow</h3>
+                <p class="section-desc">Choose from AI Workflow Inspector jobs in your Databricks workspace.</p>
                 <div class="controls">
                     <label for="job-select" class="visually-hidden">Select a job from the list</label>
                     <select id="job-select" aria-label="Job selection dropdown">
-                        <option value="" disabled selected>Select a job manually...</option>
+                        <option value="" disabled selected>Loading jobs...</option>
                     </select>
                 </div>
             </div>
@@ -109,11 +82,10 @@
                     <div class="score" id="docs-score" aria-live="polite">--</div>
                     <p class="score-label">Completeness</p>
                 </article>
-                <article class="card score-card" aria-labelledby="cost-label">
-                    <h3 id="cost-label">Est. Cost/Run</h3>
-                    <div class="score" id="cost-score" aria-live="polite">--</div>
-                    <p class="score-label" id="cost-details">Calculating...</p>
-                    <p class="score-label cost-breakdown" id="cost-breakdown"></p>
+                <article class="card score-card" aria-labelledby="docs-label">
+                    <h3 id="docs-label">Documentation</h3>
+                    <div class="score" id="docs-score" aria-live="polite">--</div>
+                    <p class="score-label">Completeness</p>
                 </article>
             </div>
 

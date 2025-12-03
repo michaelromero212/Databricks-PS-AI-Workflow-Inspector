@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const scanBtn = document.getElementById('scan-btn');
     const statusIndicator = document.getElementById('status-indicator');
     const resultsArea = document.getElementById('results-area');
-    const demoBtns = document.querySelectorAll('.demo-btn');
     const modelSelect = document.getElementById('model-select');
 
     // Fetch initial data
@@ -19,35 +18,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Model selection event listener
     modelSelect.addEventListener('change', handleModelChange);
 
-    // Demo button event listeners
-    demoBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const jobId = btn.getAttribute('data-job-id');
-            // Set the dropdown to this job (if it exists in the list)
-            jobSelect.value = jobId;
-            scanBtn.disabled = false;
-
-            // Add visual feedback - highlight selected button
-            demoBtns.forEach(b => {
-                b.style.background = '';
-                b.style.color = '';
-                b.style.border = '';
-            });
-            btn.style.border = '2px solid var(--primary-blue)';
-        });
-    });
-
-    // Manual selection event listeners
+    // Job selection event listener
     jobSelect.addEventListener('change', () => {
         scanBtn.disabled = !jobSelect.value;
-        // Reset demo button highlighting
-        demoBtns.forEach(b => {
-            b.style.background = '';
-            b.style.color = '';
-        });
     });
 
-    scanBtn.addEventListener('click', handleScan);
+    // Scan button click
+    scanBtn.addEventListener('click', () => {
+        if (jobSelect.value) {
+            handleScan(jobSelect.value);
+        }
+    });
 
     async function fetchJobs() {
         try {
@@ -155,31 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
         animateScore('health-score', data.analysis.workflow_health_score);
         animateScore('notebook-score', data.analysis.notebook_score || 'N/A');
         animateScore('docs-score', data.analysis.docs_score);
-
-        // Update Cost
-        const costData = data.cost_analysis;
-        if (costData && costData.estimated_cost_usd !== undefined) {
-            document.getElementById('cost-score').textContent = `$${costData.estimated_cost_usd.toFixed(2)}`;
-
-            // Format the breakdown details
-            const dbusPerHour = costData.total_dbus_per_hour || 0;
-            const hours = costData.duration_hours || 0;
-            document.getElementById('cost-details').textContent =
-                `${dbusPerHour.toFixed(1)} DBUs/hr × ${hours.toFixed(2)} hrs`;
-
-            // Add detailed breakdown if available
-            const breakdownEl = document.getElementById('cost-breakdown');
-            if (costData.details) {
-                breakdownEl.textContent = costData.details;
-                breakdownEl.style.display = 'block';
-            } else {
-                breakdownEl.style.display = 'none';
-            }
-        } else {
-            document.getElementById('cost-score').textContent = 'N/A';
-            document.getElementById('cost-details').textContent = 'No data';
-            document.getElementById('cost-breakdown').style.display = 'none';
-        }
 
         // Update Top Fixes
         const fixesList = document.getElementById('fixes-list');

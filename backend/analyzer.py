@@ -2,7 +2,6 @@ import json
 import logging
 from dbx_client import DBXClient
 from model_selector import ModelSelector
-from cost_calculator import CostCalculator
 
 logger = logging.getLogger(__name__)
 
@@ -10,7 +9,6 @@ class WorkflowAnalyzer:
     def __init__(self):
         self.dbx = DBXClient()
         self.model = ModelSelector()
-        self.cost_calculator = CostCalculator()
 
     def analyze_job(self, job_id):
         """Orchestrates the full analysis of a Databricks Job."""
@@ -71,44 +69,11 @@ class WorkflowAnalyzer:
             logger.warning("JSON decode error on LLM response.")
             analysis_json = self._get_fallback_analysis()
 
-            analysis_json = self._get_fallback_analysis()
-
-        # 6. Calculate Cost Estimate
-        logger.info("Calculating cost estimate...")
-        runs = self.dbx.list_job_runs(job_id)
-        avg_duration = 0
-        if runs:
-            durations = [r.get("execution_duration", 0) / 1000.0 for r in runs if r.get("execution_duration")]
-            if durations:
-                avg_duration = sum(durations) / len(durations)
-        
-        # Fallback duration if no runs (e.g., 15 mins)
-        if avg_duration == 0:
-            avg_duration = 900 
-
-        # Get cluster spec (simplified: assume first job cluster or new_cluster)
-        cluster_spec = {}
-        if settings.get("job_clusters"):
-            cluster_spec = settings.get("job_clusters")[0].get("new_cluster", {})
-        elif settings.get("tasks"):
-            # Try to find a task with new_cluster
-            for t in settings.get("tasks"):
-                if t.get("new_cluster"):
-                    cluster_spec = t.get("new_cluster")
-                    break
-        
-        if not cluster_spec and settings.get("environments"):
-            # Fallback for Serverless/Environment compute
-            cluster_spec = {"node_type_id": "Serverless", "num_workers": 0}
-        
-        cost_analysis = self.cost_calculator.calculate_cost(cluster_spec, avg_duration)
-
         return {
             "job_id": job_id,
             "job_name": settings.get("name"),
             "notebooks": notebooks_analyzed,
             "analysis": analysis_json,
-            "cost_analysis": cost_analysis,
             "raw_llm_response": llm_response_str
         }
 
